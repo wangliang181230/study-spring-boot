@@ -1,0 +1,3 @@
+# Auto Configuration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.wangliang181230.auto1.Test1AutoConfiguration
