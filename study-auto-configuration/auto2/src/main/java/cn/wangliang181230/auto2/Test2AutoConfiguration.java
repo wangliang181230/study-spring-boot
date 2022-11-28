@@ -1,10 +1,12 @@
 package cn.wangliang181230.auto2;
 
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import com.alibaba.fastjson.JSON;
 import org.springframework.context.annotation.Bean;
 
-@AutoConfigureBefore(name = "cn.wangliang181230.auto3.Test3AutoConfiguration")
 public class Test2AutoConfiguration {
+
+	private static final String TAG = JSON.parse("{\"name\":\"wangliang\"}").toString();
+
 
 	public Test2AutoConfiguration() {
 		System.out.println("22222222222");
@@ -12,6 +14,7 @@ public class Test2AutoConfiguration {
 
 	@Bean
 	public Bean2 bean2() {
+		System.out.println(JSON.parse("{\"name\":\"wangliang\"}"));
 		return new Bean2();
 	}
 

@@ -1,13 +1,11 @@
 package cn.wangliang181230.auto1;
 
-import cn.wangliang181230.auto3.Bean3;
-import cn.wangliang181230.auto3.Test3AutoConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 
-@ConditionalOnBean(Bean3.class)
-@AutoConfigureAfter(Test3AutoConfiguration.class)
+@AutoConfigureOrder(100)
+@AutoConfigureBefore(name = "cn.wangliang181230.auto3.Test2AutoConfiguration")
 public class Test1AutoConfiguration {
 
 	public Test1AutoConfiguration() {

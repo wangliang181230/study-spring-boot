@@ -1,7 +1,9 @@
 package cn.wangliang181230.auto3;
 
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 
+@AutoConfigureAfter(name = "cn.wangliang181230.auto3.Test2AutoConfiguration")
 public class Test3AutoConfiguration {
 
 	public Test3AutoConfiguration() {

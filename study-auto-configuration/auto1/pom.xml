@@ -17,7 +17,7 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.wangliang181230</groupId>
-			<artifactId>auto3</artifactId>
+			<artifactId>auto2</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
