@@ -15,5 +15,6 @@
 
 	<modules>
 		<module>study-auto-configuration</module>
+		<module>test-compatibility-springboot3-seata</module>
 	</modules>
 </project>
