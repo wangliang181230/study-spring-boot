@@ -12,6 +12,7 @@ public class Test3AutoConfiguration {
 
 	@Bean
 	public Bean3 bean3() {
+		System.out.println("bean3");
 		return new Bean3();
 	}
 

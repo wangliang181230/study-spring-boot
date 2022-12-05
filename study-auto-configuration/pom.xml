@@ -12,9 +12,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>web</module>
 		<module>auto1</module>
 		<module>auto2</module>
 		<module>auto3</module>
+		<module>test-auto-application</module>
 	</modules>
 </project>

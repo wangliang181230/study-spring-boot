@@ -14,6 +14,7 @@ public class Test2AutoConfiguration {
 
 	@Bean
 	public Bean2 bean2() {
+		System.out.println("bean2");
 		System.out.println(JSON.parse("{\"name\":\"wangliang\"}"));
 		return new Bean2();
 	}
