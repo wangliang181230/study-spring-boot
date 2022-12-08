@@ -10,18 +10,16 @@ import org.springframework.util.Assert;
 //@Component
 public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
-	private ConfigurableEnvironment environment;
-
 	private MyProperties myProperties;
 
+	private ConfigurableEnvironment environment;
 
-	public MyBeanDefinitionRegistryPostProcessor(ConfigurableEnvironment environment) {
-		this.environment = environment;
-	}
 
-	public MyBeanDefinitionRegistryPostProcessor(MyProperties myProperties) {
-		Assert.notNull(myProperties.getName(), "'myProperties.getName()' must be not null");
+	public MyBeanDefinitionRegistryPostProcessor(MyProperties myProperties, ConfigurableEnvironment environment) {
 		this.myProperties = myProperties;
+		this.environment = environment;
+		Assert.notNull(environment, "Environment must not be null");
+		Assert.notNull(myProperties.getName(), "'myProperties.getName()' must be not null");
 	}
 
 
