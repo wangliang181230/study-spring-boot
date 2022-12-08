@@ -15,6 +15,6 @@
 		<module>auto1</module>
 		<module>auto2</module>
 		<module>auto3</module>
-		<module>test-auto-application</module>
+		<module>study-auto-configuration-application</module>
 	</modules>
 </project>

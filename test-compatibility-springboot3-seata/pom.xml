@@ -9,7 +9,9 @@
 		<relativePath/>
 	</parent>
 
+	<groupId>cn.wangliang181230</groupId>
 	<artifactId>test-compatibility-springboot3-seata</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>

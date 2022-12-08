@@ -8,7 +8,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>test-auto-application</artifactId>
+	<artifactId>study-auto-configuration-application</artifactId>
 
 	<dependencies>
 		<dependency>
