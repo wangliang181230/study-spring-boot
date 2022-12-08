@@ -5,7 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.0</version>
+		<version>2.7.6</version>
+		<relativePath/>
 	</parent>
 
 	<groupId>cn.wangliang181230</groupId>
@@ -15,6 +16,7 @@
 
 	<modules>
 		<module>study-auto-configuration</module>
+		<module>test-BeanDefinitionRegistryPostProcessor</module>
 		<module>test-compatibility-springboot3-seata</module>
 	</modules>
 </project>
