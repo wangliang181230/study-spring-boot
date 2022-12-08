@@ -7,7 +7,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.Assert;
 
-//@Component
 public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
 	private MyProperties myProperties;
@@ -16,10 +15,16 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
 
 	public MyBeanDefinitionRegistryPostProcessor(MyProperties myProperties, ConfigurableEnvironment environment) {
+		// assert environment
+		Assert.notNull(environment, "Environment must not be null");
+		Assert.notNull(environment.getProperty("my.name"), "'my.name' must be not null");
+
+		// assert properties
+		Assert.notNull(myProperties.getName(), "'myProperties.getName()' must be not null");
+
+		// sets
 		this.myProperties = myProperties;
 		this.environment = environment;
-		Assert.notNull(environment, "Environment must not be null");
-		Assert.notNull(myProperties.getName(), "'myProperties.getName()' must be not null");
 	}
 
 

@@ -1,11 +1,11 @@
-package cn.wangliang181230.test.beandefinitionregistrypostprocessor;
+package cn.wangliang181230.test.beandefinitionregistrypostprocessor.autoconfigure;
 
+import cn.wangliang181230.test.beandefinitionregistrypostprocessor.MyBeanDefinitionRegistryPostProcessor;
+import cn.wangliang181230.test.beandefinitionregistrypostprocessor.MyProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-@Configuration(proxyBeanMethods = false)
-public class MyBeanDefinitionRegistryPostProcessorConfiguration {
+public class MyBeanDefinitionRegistryPostProcessorAutoConfiguration {
 
 	@Bean
 	public MyBeanDefinitionRegistryPostProcessor myBeanDefinitionRegistryPostProcessor(MyProperties myProperties, ConfigurableEnvironment environment) {
