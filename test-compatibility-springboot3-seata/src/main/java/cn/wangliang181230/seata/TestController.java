@@ -20,7 +20,10 @@ public class TestController {
 
 	@GetMapping("/")
 	@GlobalTransactional
-	public Object test(@RequestParam(value = "testError", required = false) Boolean testError) {
+	public Object test(
+			@RequestParam(value = "testError", required = false) Boolean testError,
+			@RequestParam(value = "testError2", required = false) Boolean testError2
+	) throws InterruptedException {
 		String xid = RootContext.getXID();
 		System.out.println(xid);
 
@@ -29,6 +32,11 @@ public class TestController {
 		}
 
 		jdbcTemplate.execute("insert into tb_order (id) values (" + i.incrementAndGet() + ")");
+
+		if (Boolean.TRUE.equals(testError2)) {
+			Thread.sleep(10000L);
+			throw new RuntimeException("测试异常情况2");
+		}
 
 		return "test";
 	}

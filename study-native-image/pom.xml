@@ -11,9 +11,7 @@
 	<artifactId>study-native-image</artifactId>
 	<packaging>pom</packaging>
 
-
 	<modules>
-
 		<module>study-native-image-with-springboot2</module>
 		<module>study-native-image-with-springboot3</module>
 	</modules>
