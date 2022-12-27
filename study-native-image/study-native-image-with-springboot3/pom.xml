@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.0-M5</version>
+		<version>3.0.1</version>
 		<relativePath/>
 	</parent>
 
@@ -17,11 +17,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.experimental</groupId>
-			<artifactId>spring-native</artifactId>
-			<version>0.12.1</version>
 		</dependency>
 	</dependencies>
 
@@ -41,25 +36,6 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.springframework.experimental</groupId>
-						<artifactId>spring-aot-maven-plugin</artifactId>
-						<version>0.12.1</version>
-						<executions>
-							<execution>
-								<id>generate</id>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>test-generate</id>
-								<goals>
-									<goal>test-generate</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
 						<extensions>true</extensions>
@@ -67,7 +43,8 @@
 							<execution>
 								<id>build-native</id>
 								<goals>
-									<goal>build</goal>
+									<!--<goal>build</goal>--><!--低版本插件使用这个goal-->
+									<goal>compile-no-fork</goal>
 								</goals>
 								<phase>package</phase>
 							</execution>
@@ -79,17 +56,6 @@
 								<phase>test</phase>
 							</execution>
 						</executions>
-						<configuration>
-							<!-- ... -->
-						</configuration>
-					</plugin>
-					<!-- Avoid a clash between Spring Boot repackaging and native-maven-plugin -->
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<configuration>
-							<classifier>exec</classifier>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
