@@ -15,6 +15,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-native</artifactId>
+			<version>0.12.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -26,4 +31,74 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>native</id>
+			<dependencies>
+				<!-- Required with Maven Surefire 2.x -->
+				<dependency>
+					<groupId>org.junit.platform</groupId>
+					<artifactId>junit-platform-launcher</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.experimental</groupId>
+						<artifactId>spring-aot-maven-plugin</artifactId>
+						<version>0.12.1</version>
+						<executions>
+							<execution>
+								<id>generate</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+							<!--<execution>
+								<id>test-generate</id>
+								<goals>
+									<goal>test-generate</goal>
+								</goals>
+							</execution>-->
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.graalvm.buildtools</groupId>
+						<artifactId>native-maven-plugin</artifactId>
+						<version>0.9.19</version>
+						<extensions>true</extensions>
+						<executions>
+							<execution>
+								<id>build-native</id>
+								<goals>
+									<goal>build</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+							<execution>
+								<id>test-native</id>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<phase>test</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<!-- ... -->
+						</configuration>
+					</plugin>
+					<!-- Avoid a clash between Spring Boot repackaging and native-maven-plugin -->
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<classifier>exec</classifier>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

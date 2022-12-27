@@ -15,4 +15,20 @@
 		<module>study-native-image-with-springboot2</module>
 		<module>study-native-image-with-springboot3</module>
 	</modules>
+
+	<repositories>
+		<repository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
