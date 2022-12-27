@@ -10,6 +10,10 @@
 
 	<artifactId>study-native-image-with-springboot2</artifactId>
 
+	<properties>
+		<native-build-tools-plugin.version>0.9.19</native-build-tools-plugin.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -35,15 +39,52 @@
 	<profiles>
 		<profile>
 			<id>native</id>
-			<dependencies>
-				<!-- Required with Maven Surefire 2.x -->
-				<dependency>
-					<groupId>org.junit.platform</groupId>
-					<artifactId>junit-platform-launcher</artifactId>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
 			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-maven-plugin</artifactId>
+							<configuration>
+								<image>
+									<builder>paketobuildpacks/builder:tiny</builder>
+									<env>
+										<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+									</env>
+								</image>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.graalvm.buildtools</groupId>
+							<artifactId>native-maven-plugin</artifactId>
+							<version>${native-build-tools-plugin.version}</version>
+							<configuration>
+								<mainClass>cn.wangliang181230.studynativeimage.StudyNativeImageBySpringBoot2Application</mainClass>
+								<classesDirectory>${project.build.outputDirectory}</classesDirectory>
+								<metadataRepository>
+									<enabled>true</enabled>
+								</metadataRepository>
+								<requiredVersion>22.3</requiredVersion>
+							</configuration>
+							<executions>
+								<execution>
+									<id>add-reachability-metadata</id>
+									<goals>
+										<goal>add-reachability-metadata</goal>
+									</goals>
+								</execution>
+								<execution>
+									<id>build-native</id>
+									<goals>
+										<!--<goal>build</goal>--><!--低版本插件使用这个goal-->
+										<goal>compile-no-fork</goal>
+									</goals>
+									<phase>package</phase>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 				<plugins>
 					<plugin>
 						<groupId>org.springframework.experimental</groupId>
@@ -67,35 +108,24 @@
 					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
-						<version>0.9.19</version>
-						<extensions>true</extensions>
+						<version>${native-build-tools-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>build-native</id>
 								<goals>
-									<goal>build</goal>
+									<!--<goal>build</goal>--><!--低版本插件使用这个goal-->
+									<goal>compile-no-fork</goal>
 								</goals>
 								<phase>package</phase>
 							</execution>
-							<execution>
-								<id>test-native</id>
+							<!--<execution>
+								<id>native-test</id>
 								<goals>
 									<goal>test</goal>
 								</goals>
 								<phase>test</phase>
-							</execution>
+							</execution>-->
 						</executions>
-						<configuration>
-							<!-- ... -->
-						</configuration>
-					</plugin>
-					<!-- Avoid a clash between Spring Boot repackaging and native-maven-plugin -->
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<configuration>
-							<classifier>exec</classifier>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
