@@ -1,37 +1,77 @@
-问题1：
-C:\Users\administrator>gu install native-image
+问题：*
+[root]# gu install native-image
 Downloading: Component catalog from www.graalvm.org
 Processing Component: Native Image
 Downloading: Component native-image: Native Image from github.com
 I/O error occurred: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
 
-解决1：
-执行下面附件1的java程序，生成证书文件：java InstallCert www.graalvm.org
-将生成的 `jssecacerts` 证书文件复制到 `%JAVA_HOME%/lib/security` 目录下
+解决：
+执行下面附件1的java程序，生成证书文件：
+```shell
+javac InstallCert.java
+java InstallCert www.graalvm.org
+```
+将生成的 `jssecacerts` 证书文件复制到 `%JAVA_HOME%/lib/security` 目录下：
+```shell
+mv jssecacerts /usr/java/graalvm-ce-java17-22.3.0/lib/security/jssecacerts
+```
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
-问题2：
-Failed generating 'study-native-image-with-springboot3' after 5.5s.
-Error: Default native-compiler executable 'cl.exe' not found via environment variable PATH
+问题：springboot2
+```shell
+[root]# mvn clean package -Pnative -e
+```
+报错：
+```log
+Warning: Using a deprecated option --allow-incomplete-classpath from 'META-INF/native-image/org.springframework.aot/spring-aot/native-image.properties'
+         in 'file:///usr/test-native/study-spring-boot/study-native-image/study-native-image-with-springboot2/target/classes/'.
+         Allowing an incomplete classpath is now the default. Use --link-at-build-time to report linking errors at image build time for a class or package.
+```
+
+Using a deprecated option --allow-incomplete-classpath from 'native-image.properties' in 'target/classes/'. Allowing an incomplete classpath is now the default. Use --link-at-build-time to report linking errors at image build time for a class or package.
+
+
+解决：
+未知
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+问题：springboot3
+```shell
+[root]# mvn clean package -Pnative -e
+```
+报错：
+```log
+Error: Default native-compiler executable 'gcc' not found via environment variable PATH
 Error: To prevent native-toolchain checking provide command-line option -H:-CheckToolchain
 Error: Use -H:+ReportExceptionStackTraces to print stacktrace of underlying exception
-Error: Image build request failed with exit status 1
-
-解决2：
-安装Visual Studio
-下载https://visualstudio.microsoft.com/zh-hans/downloads/，在线安装
-一般选择使用 C++ 的桌面开发 -> `MSVC v143 - VS 2022 C++ x64/x86 生成工具`和 `Windows 11 SDK` 即可
-配置环境变量：
 ```
-LIB=C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\ucrt\x64;E:\Tool\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\lib\x64
-INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt;C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared;E:\Tool\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\include
-PATH=E:\Tool\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\bin\HostX64\x64
+
+解决：
+安装gcc即可
+```shell
+[root]# yum install gcc
 ```
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
-问题3：
+问题：
+```shell
+[root]# mvn clean package -Pnative -e
+```
+报错：
+```log
+[2/7] Performing analysis...  [******Error: Image build request failed with exit status 137
+```
+
+解决：
+未知，关注issue：https://github.com/graalvm/native-build-tools/issues/317
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+问题：springboot2
 在springboot2下打包时，当springboot2的版本为2.7.6及以上时，会报错：
 ```log
 Exception in thread "main" java.lang.NoClassDefFoundError: org/springframework/boot/ApplicationServletEnvironment
@@ -58,7 +98,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.boot.Applicatio
 	... 16 more
 ```
 
-解决3：
+解决：
 将springboot2的版本降到2.7.5即可
 
 
