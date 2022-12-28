@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class StudyNativeImageBySpringBoot2Application {
 
 	public static void main(String[] args) {
-		System.out.println("\r\n\r\n\r\nargs: " + Arrays.toString(args));
+		System.out.println("\r\n\r\n\r\nargs: " + Arrays.toString(args) + "\r\n");
 		SpringApplication.run(StudyNativeImageBySpringBoot2Application.class, args);
 	}
 
