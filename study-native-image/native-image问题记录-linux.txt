@@ -1,4 +1,4 @@
-问题：*
+问题：springboot2、springboot3
 [root]# gu install native-image
 Downloading: Component catalog from www.graalvm.org
 Processing Component: Native Image
@@ -67,7 +67,33 @@ Error: Use -H:+ReportExceptionStackTraces to print stacktrace of underlying exce
 ```
 
 解决：
-未知，关注issue：https://github.com/graalvm/native-build-tools/issues/317
+内存不足导致，加内存即可。
+关注issue：https://github.com/graalvm/native-build-tools/issues/317
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+问题：
+```shell
+[root]# mvn clean package -Pnative -e
+```
+报错：
+```log
+[7/7] Creating image...
+
+Fatal error: java.lang.RuntimeException: There was an error linking the native image: Linker command exited with 1
+
+Based on the linker command output, possible reasons for this include:
+1. It appears as though libz.a is missing. Please install it.
+```
+
+解决：
+缺少了 libz.a 文件，执行以下脚本即可：
+```shell
+sudo apt install zlib1g-dev
+或
+yum install -y zlib zlib-devel
+```
+参照 https://blog.csdn.net/qwfys200/article/details/120472058
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 

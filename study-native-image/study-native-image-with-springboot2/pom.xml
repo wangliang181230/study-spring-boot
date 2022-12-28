@@ -12,6 +12,7 @@
 
 	<properties>
 		<native-build-tools-plugin.version>0.9.19</native-build-tools-plugin.version>
+		<spring-native.version>0.12.1</spring-native.version>
 	</properties>
 
 	<dependencies>
@@ -22,7 +23,7 @@
 		<dependency>
 			<groupId>org.springframework.experimental</groupId>
 			<artifactId>spring-native</artifactId>
-			<version>0.12.1</version>
+			<version>${spring-native.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -59,7 +60,6 @@
 							<artifactId>native-maven-plugin</artifactId>
 							<version>${native-build-tools-plugin.version}</version>
 							<configuration>
-								<mainClass>cn.wangliang181230.studynativeimage.StudyNativeImageBySpringBoot2Application</mainClass>
 								<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 								<metadataRepository>
 									<enabled>true</enabled>
@@ -73,14 +73,6 @@
 										<goal>add-reachability-metadata</goal>
 									</goals>
 								</execution>
-								<execution>
-									<id>build-native</id>
-									<goals>
-										<!--<goal>build</goal>--><!--低版本插件使用这个goal-->
-										<goal>compile-no-fork</goal>
-									</goals>
-									<phase>package</phase>
-								</execution>
 							</executions>
 						</plugin>
 					</plugins>
@@ -89,7 +81,7 @@
 					<plugin>
 						<groupId>org.springframework.experimental</groupId>
 						<artifactId>spring-aot-maven-plugin</artifactId>
-						<version>0.12.1</version>
+						<version>${spring-native.version}</version>
 						<executions>
 							<execution>
 								<id>generate</id>
@@ -112,11 +104,11 @@
 						<executions>
 							<execution>
 								<id>build-native</id>
+								<phase>package</phase>
 								<goals>
 									<!--<goal>build</goal>--><!--低版本插件使用这个goal-->
 									<goal>compile-no-fork</goal>
 								</goals>
-								<phase>package</phase>
 							</execution>
 							<!--<execution>
 								<id>native-test</id>
@@ -131,4 +123,20 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<repositories>
+		<repository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

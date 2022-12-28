@@ -43,8 +43,8 @@
 							<execution>
 								<id>build-native</id>
 								<goals>
-									<!--<goal>build</goal>--><!--低版本插件使用这个goal-->
 									<goal>compile-no-fork</goal>
+									<!--<goal>build</goal>--><!-- 该插件低版本时使用的是这个goal，高版本时已过时，改为使用compile-no-fork -->
 								</goals>
 								<phase>package</phase>
 							</execution>
@@ -61,20 +61,4 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<repositories>
-		<repository>
-			<id>spring-release</id>
-			<name>Spring release</name>
-			<url>https://repo.spring.io/plugins-release</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-release</id>
-			<name>Spring release</name>
-			<url>https://repo.spring.io/plugins-release</url>
-		</pluginRepository>
-	</pluginRepositories>
 </project>
