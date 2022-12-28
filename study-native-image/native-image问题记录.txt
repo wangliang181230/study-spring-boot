@@ -6,10 +6,10 @@ Downloading: Component native-image: Native Image from github.com
 I/O error occurred: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
 
 解决1：
-执行附件1的java程序，生成证书文件：java InstallCert www.graalvm.org
-将生成的证书文件复制到 `%JAVA_HOME%/lib/security` 目录下
+执行下面附件1的java程序，生成证书文件：java InstallCert www.graalvm.org
+将生成的 `jssecacerts` 证书文件复制到 `%JAVA_HOME%/lib/security` 目录下
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 问题2：
 Failed generating 'study-native-image-with-springboot3' after 5.5s.
@@ -22,7 +22,6 @@ Error: Image build request failed with exit status 1
 安装Visual Studio
 下载https://visualstudio.microsoft.com/zh-hans/downloads/，在线安装
 一般选择使用 C++ 的桌面开发 -> `MSVC v143 - VS 2022 C++ x64/x86 生成工具`和 `Windows 11 SDK` 即可
-
 配置环境变量：
 ```
 LIB=C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\ucrt\x64;E:\Tool\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\lib\x64
@@ -30,16 +29,43 @@ INCLUDE=C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt;C:\Prog
 PATH=E:\Tool\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\bin\HostX64\x64
 ```
 
-我电脑的环境：
-```
-LIB=D:\Windows Kits\10\Lib\10.0.22621.0\um\x64;D:\Windows Kits\10\Lib\10.0.22621.0\ucrt\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.34.31933\lib\x64
-INCLUDE=D:\Windows Kits\10\Include\10.0.22621.0\ucrt;D:\Windows Kits\10\Include\10.0.22621.0\um;D:\Windows Kits\10\Include\10.0.22621.0\shared;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.34.31933\include
-PATH=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.34.31933\bin\Hostx64\x64
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+问题3：
+在springboot2下打包时，当springboot2的版本为2.7.6及以上时，会报错：
+```log
+Exception in thread "main" java.lang.NoClassDefFoundError: org/springframework/boot/ApplicationServletEnvironment
+	at org.springframework.boot.AotApplicationContextFactory.getOrCreateEnvironment(AotApplicationContextFactory.java:80)
+	at org.springframework.boot.AotApplicationContextFactory.loadEnvironment(AotApplicationContextFactory.java:61)
+	at org.springframework.boot.AotApplicationContextFactory.createApplicationContext(AotApplicationContextFactory.java:52)
+	at org.springframework.aot.build.ContextBootstrapContributor.contribute(ContextBootstrapContributor.java:76)
+	at org.springframework.aot.build.BootstrapCodeGenerator.generate(BootstrapCodeGenerator.java:91)
+	at org.springframework.aot.build.BootstrapCodeGenerator.generate(BootstrapCodeGenerator.java:71)
+	at org.springframework.aot.build.GenerateBootstrapCommand.call(GenerateBootstrapCommand.java:107)
+	at org.springframework.aot.build.GenerateBootstrapCommand.call(GenerateBootstrapCommand.java:42)
+	at picocli.CommandLine.executeUserObject(CommandLine.java:1953)
+	at picocli.CommandLine.access$1300(CommandLine.java:145)
+	at picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent(CommandLine.java:2352)
+	at picocli.CommandLine$RunLast.handle(CommandLine.java:2346)
+	at picocli.CommandLine$RunLast.handle(CommandLine.java:2311)
+	at picocli.CommandLine$AbstractParseResultHandler.execute(CommandLine.java:2179)
+	at picocli.CommandLine.execute(CommandLine.java:2078)
+	at org.springframework.aot.build.GenerateBootstrapCommand.main(GenerateBootstrapCommand.java:112)
+Caused by: java.lang.ClassNotFoundException: org.springframework.boot.ApplicationServletEnvironment
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520)
+	... 16 more
 ```
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+解决3：
+将springboot2的版本降到2.7.5即可
 
-附件1：InstallCert.java
+
+======================================================================================================================================================
+
+附件1：
+InstallCert.java
 ```java
 import java.io.*;
 import java.security.*;
