@@ -1,2 +1,11 @@
+spring:
+  application:
+    name: study-native-image-with-springboot3-application
+
+logging:
+  file:
+    path: .\logs\
+    name: ${spring.application.name}.log
+
 test.bean.enabled: true
 test.bean.type: A
