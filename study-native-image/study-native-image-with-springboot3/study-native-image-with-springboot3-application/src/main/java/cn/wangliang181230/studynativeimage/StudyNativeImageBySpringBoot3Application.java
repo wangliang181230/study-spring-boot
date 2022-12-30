@@ -37,6 +37,7 @@ public class StudyNativeImageBySpringBoot3Application {
 		map.put("args", ARGS);
 		map.put("env", System.getenv());
 		map.put("properties", System.getProperties());
+		map.put("isAotMode", AotUtils.isAotMode());
 
 		map.put("properties: test.bean.enabled", environment.getProperty("test.bean.enabled", "null"));
 		map.put("properties: test.bean.type", environment.getProperty("test.bean.type", "null"));
