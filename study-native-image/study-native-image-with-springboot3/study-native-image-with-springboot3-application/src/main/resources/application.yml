@@ -4,7 +4,6 @@ spring:
 
 logging:
   file:
-    path: .\logs\
     name: ${spring.application.name}.log
 
 test.bean.enabled: true
