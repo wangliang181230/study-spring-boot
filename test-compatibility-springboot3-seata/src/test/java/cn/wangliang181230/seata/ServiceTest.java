@@ -24,6 +24,7 @@ public class ServiceTest {
 		try {
 			Assertions.assertEquals(0, testService.count());
 			testService.test(false, true, 0);
+			Assertions.assertEquals(1, testService.count());
 		} catch (Exception e) {
 			Thread.sleep(2000L);
 			Assertions.assertEquals(0, testService.count());
