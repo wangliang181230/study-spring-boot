@@ -1,4 +1,4 @@
-package io.seata.common;
+package io.seata.spring;
 
 public abstract class AotUtils {
 

@@ -65,7 +65,7 @@ public class SpringApplicationAotProcessor extends ContextAotProcessor {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// 打印参数，抓取日志，放到 /test/ 目录下的 SpringApplicationAotProcessorTest.java 中进行测试
+		//Override: 打印参数，抓取日志，放到 /test/ 目录下的 SpringApplicationAotProcessorTest.java 中进行测试
 		System.out.println(Arrays.toString(args));
 
 		int requiredArgs = 6;
