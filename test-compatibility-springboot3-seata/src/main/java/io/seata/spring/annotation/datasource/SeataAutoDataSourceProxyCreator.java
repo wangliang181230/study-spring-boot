@@ -19,6 +19,7 @@ import io.seata.core.model.BranchType;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.rm.datasource.SeataDataSourceProxy;
 import io.seata.rm.datasource.xa.DataSourceProxyXA;
+import io.seata.spring.aot.AotUtils;
 import org.aopalliance.aop.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,12 +60,18 @@ public class SeataAutoDataSourceProxyCreator extends AbstractAutoProxyCreator {
 
 	@Override
 	protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource customTargetSource) {
+		if (AotUtils.isSpringAotProcessing() && this.shouldSkip(beanClass, beanName)) {
+			return DO_NOT_PROXY;
+		}
 		return advisors;
 	}
 
 	@Override
 	protected boolean shouldSkip(Class<?> beanClass, String beanName) {
 		if (excludes.contains(beanClass.getName())) {
+			return true;
+		}
+		if (AotUtils.isSpringAotProcessing() && !DataSource.class.isAssignableFrom(beanClass)) {
 			return true;
 		}
 		return SeataProxy.class.isAssignableFrom(beanClass);

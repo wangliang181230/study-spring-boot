@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TestSeataApplication {
 
 	public static void main(String[] args) {
+		//new MySQLInsertExecutor(null, null, null);
 		SpringApplication.run(TestSeataApplication.class, args);
 	}
 }

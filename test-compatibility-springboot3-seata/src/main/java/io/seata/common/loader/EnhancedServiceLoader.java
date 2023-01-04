@@ -15,6 +15,13 @@
  */
 package io.seata.common.loader;
 
+import io.seata.common.Constants;
+import io.seata.common.executor.Initialize;
+import io.seata.common.util.CollectionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,13 +35,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-
-import io.seata.common.Constants;
-import io.seata.common.executor.Initialize;
-import io.seata.common.util.CollectionUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The type Enhanced service loader.
@@ -398,14 +398,12 @@ public class EnhancedServiceLoader {
 				loadAllExtensionClass(loader);
 				ExtensionDefinition<S> defaultExtensionDefinition = getDefaultExtensionDefinition();
 				return getExtensionInstance(defaultExtensionDefinition, loader, argTypes, args);
+			} catch (EnhancedServiceNotFoundException e) {
+				throw e;
 			} catch (Throwable e) {
-				if (e instanceof EnhancedServiceNotFoundException) {
-					throw (EnhancedServiceNotFoundException)e;
-				} else {
-					throw new EnhancedServiceNotFoundException(
-							"not found service provider for : " + type.getName() + " caused by " + ExceptionUtils
-									.getFullStackTrace(e));
-				}
+				throw new EnhancedServiceNotFoundException(
+						"not found service provider for : " + type.getName() + " caused by " + ExceptionUtils
+								.getFullStackTrace(e));
 			}
 		}
 
@@ -433,7 +431,11 @@ public class EnhancedServiceLoader {
 		private S getExtensionInstance(ExtensionDefinition<S> definition, ClassLoader loader, Class<?>[] argTypes,
 									   Object[] args) {
 			if (definition == null) {
-				throw new EnhancedServiceNotFoundException("not found service provider for : " + type.getName());
+				try {
+					int i = 1 / 0;
+				} catch (Exception e) {
+					throw new EnhancedServiceNotFoundException("not found service provider for : " + type.getName(), e);
+				}
 			}
 			if (Scope.SINGLETON.equals(definition.getScope())) {
 				Holder<Object> holder = CollectionUtils.computeIfAbsent(definitionToInstanceMap, definition,
@@ -482,7 +484,7 @@ public class EnhancedServiceLoader {
 			List<ExtensionDefinition<S>> extensionDefinitions = new ArrayList<>();
 			try {
 				loadFile(SERVICES_DIRECTORY, loader, extensionDefinitions);
-				loadFile(SEATA_DIRECTORY, loader, extensionDefinitions);
+				//loadFile(SEATA_DIRECTORY, loader, extensionDefinitions);
 			} catch (IOException e) {
 				throw new EnhancedServiceNotFoundException(e);
 			}
@@ -520,7 +522,10 @@ public class EnhancedServiceLoader {
 				urls = ClassLoader.getSystemResources(fileName);
 			}
 			if (urls != null) {
+				boolean b = false;
+				boolean c = false;
 				while (urls.hasMoreElements()) {
+					b = true;
 					java.net.URL url = urls.nextElement();
 					try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), Constants.DEFAULT_CHARSET))) {
 						String line;
@@ -531,20 +536,21 @@ public class EnhancedServiceLoader {
 							}
 							line = line.trim();
 							if (line.length() > 0) {
+								c = true;
 								try {
 									ExtensionDefinition<S> extensionDefinition = getUnloadedExtensionDefinition(line, loader);
 									if (extensionDefinition == null) {
-										if (LOGGER.isDebugEnabled()) {
-											LOGGER.debug("The same extension {} has already been loaded, skipped", line);
+										if (LOGGER.isInfoEnabled()) {
+											LOGGER.info("The same extension {} has already been loaded, skipped", line);
 										}
 										continue;
 									}
 									extensions.add(extensionDefinition);
 								} catch (LinkageError | ClassNotFoundException e) {
-									LOGGER.warn("Load [{}] class fail. {}", line, e.getMessage());
+									LOGGER.warn("Load [{}] class fail. {}", line, e.getMessage(), e);
 								} catch (ClassCastException e) {
 									LOGGER.error("Load [{}] class fail, please make sure the extension" +
-											" config in {} implements {}.", line, fileName, type.getName());
+											" config in {} implements {}.", line, fileName, type.getName(), e);
 								}
 							}
 						}
@@ -552,6 +558,13 @@ public class EnhancedServiceLoader {
 						LOGGER.warn("load clazz instance error: {}", e.getMessage());
 					}
 				}
+				if (!b) {
+					LOGGER.warn("urls is empty in '{}': {}", dir, type.getName());
+				} else if (!c) {
+					LOGGER.warn("has no extensionDefinition in '{}': {}", dir, type.getName());
+				}
+			} else {
+				LOGGER.warn("urls is null: {}", type.getName());
 			}
 		}
 

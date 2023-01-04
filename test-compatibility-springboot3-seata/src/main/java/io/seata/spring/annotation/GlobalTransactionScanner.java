@@ -26,7 +26,9 @@ import io.seata.core.rpc.ShutdownHook;
 import io.seata.core.rpc.netty.RmNettyRemotingClient;
 import io.seata.core.rpc.netty.TmNettyRemotingClient;
 import io.seata.rm.RMClient;
+import io.seata.rm.tcc.api.LocalTCC;
 import io.seata.spring.annotation.scannercheckers.PackageScannerChecker;
+import io.seata.spring.aot.AotUtils;
 import io.seata.spring.tcc.TccActionInterceptor;
 import io.seata.spring.util.OrderUtil;
 import io.seata.spring.util.SpringProxyUtils;
@@ -242,6 +244,12 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 		ShutdownHook.getInstance().addDisposable(RmNettyRemotingClient.getInstance(applicationId, txServiceGroup));
 	}
 
+	@Override
+	public boolean shouldSkip(Class<?> bean, String beanName) {
+		// do checkers
+		return !doCheckers(bean, beanName);
+	}
+
 	/**
 	 * The following will be scanned, and added corresponding interceptor:
 	 * <p>
@@ -275,6 +283,7 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 				if (PROXYED_SET.contains(beanName)) {
 					return bean;
 				}
+
 				interceptor = null;
 				//check TCC proxy
 				if (TCCBeanParserUtils.isTccAutoProxy(bean, beanName, applicationContext)) {
@@ -285,11 +294,7 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 					ConfigurationCache.addConfigListener(ConfigurationKeys.DISABLE_GLOBAL_TRANSACTION,
 							(ConfigurationChangeListener)interceptor);
 				} else {
-					Class<?> serviceInterface = SpringProxyUtils.findTargetClass(bean);
-					Class<?>[] interfacesIfJdk = SpringProxyUtils.findInterfaces(bean);
-
-					if (!existsAnnotation(new Class[]{serviceInterface})
-							&& !existsAnnotation(interfacesIfJdk)) {
+					if (!existGlobalTransactionalAnnotation(bean)) {
 						return bean;
 					}
 
@@ -460,8 +465,17 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 
 	//endregion the methods about findAddSeataAdvisorPosition  END
 
+	private boolean existGlobalTransactionalAnnotation(Object bean) throws Exception {
+		Class<?> serviceInterface = SpringProxyUtils.findTargetClass(bean);
+		if (existsAnnotation(serviceInterface)) {
+			return true;
+		}
 
-	private boolean existsAnnotation(Class<?>[] classes) {
+		Class<?>[] interfacesIfJdk = SpringProxyUtils.findInterfaces(bean);
+		return existsAnnotation(interfacesIfJdk);
+	}
+
+	private boolean existsAnnotation(Class<?>... classes) {
 		if (CollectionUtils.isNotEmpty(classes)) {
 			for (Class<?> clazz : classes) {
 				if (clazz == null) {
@@ -492,9 +506,27 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 		return new MethodDesc(anno, method);
 	}
 
+	private boolean isTccAutoProxy(Class<?> beanClass) {
+		return beanClass.getAnnotation(LocalTCC.class) != null;
+	}
+
 	@Override
 	protected Object[] getAdvicesAndAdvisorsForBean(Class beanClass, String beanName, TargetSource customTargetSource)
 			throws BeansException {
+		if (AotUtils.isSpringAotProcessing()) {
+			if (this.shouldSkip(beanClass, beanName)) {
+				return DO_NOT_PROXY;
+			}
+
+			if (isTccAutoProxy(beanClass)) {
+				return new Object[]{new TccActionInterceptor()};
+			} else if (existsAnnotation(beanClass)) {
+				return new Object[]{new GlobalTransactionalInterceptor(failureHandlerHook)};
+			} else {
+				return DO_NOT_PROXY;
+			}
+		}
+
 		return new Object[]{interceptor};
 	}
 
