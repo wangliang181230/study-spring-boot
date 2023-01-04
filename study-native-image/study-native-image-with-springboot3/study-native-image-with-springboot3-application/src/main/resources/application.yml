@@ -8,3 +8,6 @@ logging:
 
 test.bean.enabled: true
 test.bean.type: A
+
+filterOrder: 1
+filter-order: 2
