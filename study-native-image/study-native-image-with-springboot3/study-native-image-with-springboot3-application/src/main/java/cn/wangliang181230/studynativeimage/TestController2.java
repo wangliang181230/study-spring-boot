@@ -16,8 +16,6 @@ public class TestController2 {
 	@GetMapping("/test1")
 	public String test1() {
 		LOGGER.info("test1");
-		LOGGER.warn("test1");
-		LOGGER.error("test1");
 		return "test1";
 	}
 
@@ -25,8 +23,6 @@ public class TestController2 {
 	@GetMapping("/test2")
 	public String test2(@RequestParam(required = false) String s) {
 		LOGGER.info("test2: {}", s);
-		LOGGER.warn("test2: {}", s);
-		LOGGER.error("test2: {}", s);
 		return "test2: " + s;
 	}
 }

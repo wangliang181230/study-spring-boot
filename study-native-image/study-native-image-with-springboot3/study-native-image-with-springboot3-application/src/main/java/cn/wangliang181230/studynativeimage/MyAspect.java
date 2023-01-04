@@ -22,19 +22,12 @@ public class MyAspect {
 	public void pointCut() {
 	}
 
-	/**
-	 * 方法式拦截
-	 *
-	 * @param joinPoint
-	 */
 	@Around("pointCut()")
 	public Object beforePointCut(ProceedingJoinPoint joinPoint) throws Throwable {
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		Method method = signature.getMethod();
 
-		LOGGER.info("方法式拦截: {}", method.getName());
-		LOGGER.warn("方法式拦截: {}", method.getName());
-		LOGGER.error("方法式拦截: {}", method.getName());
+		LOGGER.info("aspect: {}", method.getName());
 
 		return joinPoint.proceed();
 	}
