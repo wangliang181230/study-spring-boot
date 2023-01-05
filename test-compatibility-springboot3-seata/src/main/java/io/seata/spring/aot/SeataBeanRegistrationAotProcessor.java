@@ -3,6 +3,8 @@ package io.seata.spring.aot;
 import io.seata.common.util.ReflectionUtil;
 import io.seata.rm.tcc.api.LocalTCC;
 import io.seata.spring.annotation.GlobalTransactionScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aot.generate.GenerationContext;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
@@ -13,9 +15,12 @@ import org.springframework.beans.factory.support.RegisteredBean;
 
 import java.util.Set;
 
+import static io.seata.spring.aot.AotUtils.ALL_MEMBER_CATEGORIES;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_METHODS;
 
 class SeataBeanRegistrationAotProcessor implements BeanRegistrationAotProcessor {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SeataBeanRegistrationAotProcessor.class);
 
 	@Override
 	public BeanRegistrationAotContribution processAheadOfTime(RegisteredBean registeredBean) {
@@ -46,8 +51,9 @@ class SeataBeanRegistrationAotProcessor implements BeanRegistrationAotProcessor 
 			for (Class<?> interClass : interfaceClasses) {
 				if (interClass.isAnnotationPresent(LocalTCC.class)) {
 					// register the @LocalTCC interface to reflectively access the method
+					LOGGER.info("Registering @LocalTCC interface [{}] to reflectively access the method", interClass.getName());
 					reflectionHints.registerType(interClass, INVOKE_PUBLIC_METHODS);
-					System.out.println("registerType: " + interClass.getName());
+					AotUtils.registerAllOfClass(interClass, false, reflectionHints, ALL_MEMBER_CATEGORIES);
 				}
 			}
 		}

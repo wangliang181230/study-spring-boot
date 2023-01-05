@@ -24,7 +24,6 @@ import io.seata.rm.datasource.undo.SQLUndoLog;
 import io.seata.saga.statelang.parser.utils.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
@@ -47,31 +46,15 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.sql.DataSource;
 
-import static org.springframework.aot.hint.MemberCategory.DECLARED_CLASSES;
-import static org.springframework.aot.hint.MemberCategory.DECLARED_FIELDS;
+import static io.seata.spring.aot.AotUtils.ALL_MEMBER_CATEGORIES;
 import static org.springframework.aot.hint.MemberCategory.INTROSPECT_DECLARED_CONSTRUCTORS;
-import static org.springframework.aot.hint.MemberCategory.INTROSPECT_DECLARED_METHODS;
-import static org.springframework.aot.hint.MemberCategory.INTROSPECT_PUBLIC_CONSTRUCTORS;
 import static org.springframework.aot.hint.MemberCategory.INTROSPECT_PUBLIC_METHODS;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_CONSTRUCTORS;
-import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_METHODS;
-import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_METHODS;
-import static org.springframework.aot.hint.MemberCategory.PUBLIC_CLASSES;
-import static org.springframework.aot.hint.MemberCategory.PUBLIC_FIELDS;
 
 class SeataRuntimeHints implements RuntimeHintsRegistrar {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SeataRuntimeHints.class);
-
-	private static final MemberCategory[] ALL_MEMBER_CATEGORIES = new MemberCategory[]{
-			INTROSPECT_PUBLIC_CONSTRUCTORS, INVOKE_PUBLIC_CONSTRUCTORS,
-			INTROSPECT_DECLARED_CONSTRUCTORS, INVOKE_DECLARED_CONSTRUCTORS,
-			PUBLIC_FIELDS, DECLARED_FIELDS,
-			INTROSPECT_PUBLIC_METHODS, INVOKE_PUBLIC_METHODS,
-			INTROSPECT_DECLARED_METHODS, INVOKE_DECLARED_METHODS,
-			PUBLIC_CLASSES, DECLARED_CLASSES
-	};
 
 	private static final Set<String> SERVICES_FILENAMES = new HashSet<>();
 

@@ -1,26 +1,29 @@
 package cn.wangliang181230.seata;
 
-import io.seata.rm.tcc.api.BusinessActionContextParameter;
+public class TccParam extends TccParamSuperClass {
 
-public class TccParam {
-
-	@BusinessActionContextParameter
-	private String a;
+	private TccParam2 tccParam2;
 
 
 	public TccParam() {
+		super();
 	}
 
 	public TccParam(String a) {
-		this.a = a;
+		super(a);
+	}
+
+	public TccParam(String a, TccParam2 tccParam2) {
+		this(a);
+		this.tccParam2 = tccParam2;
 	}
 
 
-	public String getA() {
-		return a;
+	public TccParam2 getTccParam2() {
+		return tccParam2;
 	}
 
-	public void setA(String a) {
-		this.a = a;
+	public void setTccParam2(TccParam2 tccParam2) {
+		this.tccParam2 = tccParam2;
 	}
 }
