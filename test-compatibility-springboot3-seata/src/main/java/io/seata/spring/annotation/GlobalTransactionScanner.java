@@ -16,6 +16,7 @@
 package io.seata.spring.annotation;
 
 import io.seata.common.util.CollectionUtils;
+import io.seata.common.util.ReflectionUtil;
 import io.seata.common.util.StringUtils;
 import io.seata.config.ConfigurationCache;
 import io.seata.config.ConfigurationChangeEvent;
@@ -506,8 +507,14 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 		return new MethodDesc(anno, method);
 	}
 
-	private boolean isTccAutoProxy(Class<?> beanClass) {
-		return beanClass.getAnnotation(LocalTCC.class) != null;
+	public static boolean isTccAutoProxy(Class<?> beanClass) {
+		Set<Class<?>> interfaceClasses = ReflectionUtil.getInterfaces(beanClass);
+		for (Class<?> interClass : interfaceClasses) {
+			if (interClass.isAnnotationPresent(LocalTCC.class)) {
+				return true;
+			}
+		}
+		return beanClass.isAnnotationPresent(LocalTCC.class);
 	}
 
 	@Override
@@ -519,8 +526,10 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 			}
 
 			if (isTccAutoProxy(beanClass)) {
+				LOGGER.info("Auto proxy for TCC bean: {}", beanName);
 				return new Object[]{new TccActionInterceptor()};
 			} else if (existsAnnotation(beanClass)) {
+				LOGGER.info("Auto proxy for TM  bean: {}", beanName);
 				return new Object[]{new GlobalTransactionalInterceptor(failureHandlerHook)};
 			} else {
 				return DO_NOT_PROXY;

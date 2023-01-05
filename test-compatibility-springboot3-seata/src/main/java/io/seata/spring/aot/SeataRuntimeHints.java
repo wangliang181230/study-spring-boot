@@ -60,9 +60,9 @@ import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_METHODS;
 import static org.springframework.aot.hint.MemberCategory.PUBLIC_CLASSES;
 import static org.springframework.aot.hint.MemberCategory.PUBLIC_FIELDS;
 
-class DataSourceRuntimeHints implements RuntimeHintsRegistrar {
+class SeataRuntimeHints implements RuntimeHintsRegistrar {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceRuntimeHints.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SeataRuntimeHints.class);
 
 	private static final MemberCategory[] ALL_MEMBER_CATEGORIES = new MemberCategory[]{
 			INTROSPECT_PUBLIC_CONSTRUCTORS, INVOKE_PUBLIC_CONSTRUCTORS,
