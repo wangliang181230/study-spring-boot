@@ -308,7 +308,7 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
 					interceptor = globalTransactionalInterceptor;
 				}
 
-				LOGGER.info("Bean[{}] with name [{}] would use interceptor [{}]", bean.getClass().getName(), beanName, interceptor.getClass().getName());
+				LOGGER.info("Bean [{}] with name [{}] would use interceptor [{}]", bean.getClass().getName(), beanName, interceptor.getClass().getName());
 				if (!AopUtils.isAopProxy(bean)) {
 					bean = super.wrapIfNecessary(bean, beanName, cacheKey);
 				} else {
