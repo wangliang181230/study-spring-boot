@@ -16,7 +16,6 @@
 
 package io.seata.spring.aot;
 
-import cn.wangliang181230.seata.TestService;
 import io.seata.config.Configuration;
 import io.seata.rm.datasource.sql.struct.TableRecords;
 import io.seata.rm.datasource.undo.BranchUndoLog;
@@ -48,9 +47,7 @@ import javax.sql.DataSource;
 
 import static io.seata.spring.aot.AotUtils.ALL_MEMBER_CATEGORIES;
 import static org.springframework.aot.hint.MemberCategory.INTROSPECT_DECLARED_CONSTRUCTORS;
-import static org.springframework.aot.hint.MemberCategory.INTROSPECT_PUBLIC_METHODS;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_CONSTRUCTORS;
-import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_METHODS;
 
 class SeataRuntimeHints implements RuntimeHintsRegistrar {
 
@@ -130,10 +127,6 @@ class SeataRuntimeHints implements RuntimeHintsRegistrar {
 			hints.resources().registerPattern("META-INF/services/" + servicesFileName);
 			hints.resources().registerPattern("META-INF/seata/" + servicesFileName);
 		}
-
-
-		// 临时代码
-		hints.reflection().registerType(TestService.class, INTROSPECT_PUBLIC_METHODS, INVOKE_PUBLIC_METHODS);
 	}
 
 	private boolean isSeataServices(Resource resource) {
