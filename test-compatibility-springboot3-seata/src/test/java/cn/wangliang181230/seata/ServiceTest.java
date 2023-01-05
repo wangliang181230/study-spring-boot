@@ -16,14 +16,25 @@ public class ServiceTest {
 	public void test() throws InterruptedException {
 		testService.clean();
 
-		testService.test(false, false, 0);
+		testService.test(null, 0);
 		Assertions.assertEquals(1, testService.count());
 
 		testService.clean();
 
 		try {
 			Assertions.assertEquals(0, testService.count());
-			testService.test(false, true, 0);
+			testService.test("1", 0);
+			Assertions.assertEquals(1, testService.count());
+		} catch (Exception e) {
+			Thread.sleep(2000L);
+			Assertions.assertEquals(0, testService.count());
+		}
+
+		testService.clean();
+
+		try {
+			Assertions.assertEquals(0, testService.count());
+			testService.test("2", 0);
 			Assertions.assertEquals(1, testService.count());
 		} catch (Exception e) {
 			Thread.sleep(2000L);

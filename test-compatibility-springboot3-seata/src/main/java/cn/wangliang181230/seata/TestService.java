@@ -21,6 +21,8 @@ public class TestService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private ITestTccService tccService;
 
 
 	@PostConstruct
@@ -29,13 +31,13 @@ public class TestService {
 	}
 
 	@GlobalTransactional
-	public String test(Boolean testError, Boolean testError2, long sleepTime) throws InterruptedException {
+	public String test(String test, long sleepTime) throws InterruptedException {
 		String xid = RootContext.getXID();
 		LOGGER.info("xid: {}", xid);
 
-		if (Boolean.TRUE.equals(testError)) {
+		if ("0".equals(test)) {
 			LOGGER.error("throw error1");
-			throw new RuntimeException("测试异常情况");
+			throw new MyRuntimeException("测试异常情况");
 		}
 
 		LOGGER.info("after testError");
@@ -44,15 +46,28 @@ public class TestService {
 
 		LOGGER.info("after insert");
 
-		if (Boolean.TRUE.equals(testError2)) {
-			LOGGER.error("throw error1");
+		if ("1".equals(test)) {
+			LOGGER.error("throw error2");
 			if (sleepTime > 0) {
 				Thread.sleep(sleepTime);
 			}
-			throw new RuntimeException("测试异常情况2");
+			throw new MyRuntimeException("测试异常情况2");
 		}
 
 		LOGGER.info("after testError2");
+
+		tccService.prepare(new TccParam("aaaaaaaaa"));
+
+		LOGGER.info("after tcc prepare");
+
+		if ("2".equals(test)) {
+			LOGGER.error("throw error3");
+			if (sleepTime > 0) {
+				Thread.sleep(sleepTime);
+			}
+			throw new MyRuntimeException("测试异常情况3");
+		}
+		LOGGER.info("after testError3");
 
 		return "test";
 	}

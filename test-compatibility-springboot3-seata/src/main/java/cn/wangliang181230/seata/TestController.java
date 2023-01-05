@@ -17,14 +17,14 @@ public class TestController {
 
 
 	@GetMapping("/")
-	public Object test(@RequestParam(value = "testError", required = false) Boolean testError,
-					   @RequestParam(value = "testError2", required = false) Boolean testError2
-	) throws InterruptedException {
+	public Object test(@RequestParam(value = "test", required = false) String test) throws InterruptedException {
 		try {
-			return testService.test(testError, testError2, 10000L);
+			return testService.test(test, 10000L);
+		} catch (MyRuntimeException e) {
+			return e.getMessage();
 		} catch (Exception e) {
 			LOGGER.error("测试异常", e);
-			throw e;
+			return e.toString();
 		}
 	}
 
