@@ -18,9 +18,13 @@ package io.seata.spring.aot;
 
 import cn.wangliang181230.seata.TestService;
 import io.seata.config.Configuration;
+import io.seata.rm.datasource.sql.struct.TableRecords;
+import io.seata.rm.datasource.undo.BranchUndoLog;
+import io.seata.rm.datasource.undo.SQLUndoLog;
 import io.seata.saga.statelang.parser.utils.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
@@ -36,21 +40,47 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.sql.DataSource;
 
+import static org.springframework.aot.hint.MemberCategory.DECLARED_CLASSES;
+import static org.springframework.aot.hint.MemberCategory.DECLARED_FIELDS;
 import static org.springframework.aot.hint.MemberCategory.INTROSPECT_DECLARED_CONSTRUCTORS;
+import static org.springframework.aot.hint.MemberCategory.INTROSPECT_DECLARED_METHODS;
+import static org.springframework.aot.hint.MemberCategory.INTROSPECT_PUBLIC_CONSTRUCTORS;
 import static org.springframework.aot.hint.MemberCategory.INTROSPECT_PUBLIC_METHODS;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_CONSTRUCTORS;
+import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_METHODS;
+import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_METHODS;
+import static org.springframework.aot.hint.MemberCategory.PUBLIC_CLASSES;
+import static org.springframework.aot.hint.MemberCategory.PUBLIC_FIELDS;
 
 class DataSourceRuntimeHints implements RuntimeHintsRegistrar {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceRuntimeHints.class);
 
+	private static final MemberCategory[] ALL_MEMBER_CATEGORIES = new MemberCategory[]{
+			INTROSPECT_PUBLIC_CONSTRUCTORS, INVOKE_PUBLIC_CONSTRUCTORS,
+			INTROSPECT_DECLARED_CONSTRUCTORS, INVOKE_DECLARED_CONSTRUCTORS,
+			PUBLIC_FIELDS, DECLARED_FIELDS,
+			INTROSPECT_PUBLIC_METHODS, INVOKE_PUBLIC_METHODS,
+			INTROSPECT_DECLARED_METHODS, INVOKE_DECLARED_METHODS,
+			PUBLIC_CLASSES, DECLARED_CLASSES
+	};
+
+	private static final Set<String> SERVICES_FILENAMES = new HashSet<>();
+
+	static {
+		SERVICES_FILENAMES.add("com.alibaba.dubbo.rpc.Filter");
+		SERVICES_FILENAMES.add("com.alipay.sofa.rpc.filter.Filter");
+		SERVICES_FILENAMES.add("com.taobao.hsf.invocation.filter.RPCFilter");
+		SERVICES_FILENAMES.add("com.weibo.api.motan.filter.Filter");
+	}
 
 	@Override
 	public void registerHints(RuntimeHints hints, @Nullable ClassLoader classLoader) {
@@ -63,14 +93,16 @@ class DataSourceRuntimeHints implements RuntimeHintsRegistrar {
 		Resource[] resources = ResourceUtil.getResources("classpath*:META-INF/services/*");
 		System.out.println("services resources.length: " + resources.length);
 		for (Resource resource : resources) {
-			if (resource.getFilename() == null || !resource.getFilename().startsWith("io.seata")) {
+			System.out.println(resource.getFilename());
+			if (!isSeataServices(resource)) {
 				continue;
 			}
 
 			try (InputStreamReader isr = new InputStreamReader(resource.getInputStream());
 				 BufferedReader br = new BufferedReader(isr)) {
-				String className = br.readLine();
-				registerReflectionType(hints, className);
+				br.lines().forEach(className -> {
+					registerReflectionType(hints, className);
+				});
 			} catch (IOException e) {
 				System.out.println("--- read error: " + resource.getFilename() + ", " + e.getMessage());
 			}
@@ -82,6 +114,20 @@ class DataSourceRuntimeHints implements RuntimeHintsRegistrar {
 				"io.seata.serializer.protobuf.ProtobufSerializer",
 				"io.seata.sqlparser.antlr.mysql.AntlrMySQLRecognizerFactory"
 		);
+
+		hints.reflection().registerType(BranchUndoLog.class, ALL_MEMBER_CATEGORIES);
+		LOGGER.info("register reflection type: {}", BranchUndoLog.class.getName());
+		hints.reflection().registerType(SQLUndoLog.class, ALL_MEMBER_CATEGORIES);
+		LOGGER.info("register reflection type: {}", BranchUndoLog.class.getName());
+
+		hints.reflection().registerType(TableRecords.class, ALL_MEMBER_CATEGORIES);
+		LOGGER.info("register reflection type: {}", TableRecords.class.getName());
+		hints.reflection().registerType(TableRecords.EmptyTableRecords.class, ALL_MEMBER_CATEGORIES);
+		LOGGER.info("register reflection type: {}", TableRecords.EmptyTableRecords.class.getName());
+		hints.reflection().registerType(io.seata.rm.datasource.sql.struct.Row.class, ALL_MEMBER_CATEGORIES);
+		LOGGER.info("register reflection type: {}", io.seata.rm.datasource.sql.struct.Row.class.getName());
+		hints.reflection().registerType(io.seata.rm.datasource.sql.struct.Field.class, ALL_MEMBER_CATEGORIES);
+		LOGGER.info("register reflection type: {}", io.seata.rm.datasource.sql.struct.Field.class.getName());
 
 		// caffeine中的类：类名全部为大写的类
 		Set<Class<?>> classes = getClassesByPackage("com.github.benmanes.caffeine.cache");
@@ -97,12 +143,27 @@ class DataSourceRuntimeHints implements RuntimeHintsRegistrar {
 		hints.resources().registerPattern("lib/sqlparser/druid.jar");
 		hints.resources().registerPattern("META-INF/services/io.seata.*");
 		hints.resources().registerPattern("META-INF/seata/io.seata.*");
+		for (String servicesFileName : SERVICES_FILENAMES) {
+			hints.resources().registerPattern("META-INF/services/" + servicesFileName);
+			hints.resources().registerPattern("META-INF/seata/" + servicesFileName);
+		}
 
 
 		// 临时代码
 		hints.reflection().registerType(TestService.class, INTROSPECT_PUBLIC_METHODS, INVOKE_PUBLIC_METHODS);
 	}
 
+	private boolean isSeataServices(Resource resource) {
+		if (resource.getFilename() == null) {
+			return false;
+		}
+
+		if (resource.getFilename().startsWith("io.seata")) {
+			return true;
+		}
+
+		return SERVICES_FILENAMES.contains(resource.getFilename());
+	}
 
 	private void registerReflectionType(RuntimeHints hints, String... classNames) {
 		ReflectionHints reflectionHints = hints.reflection();
@@ -111,7 +172,7 @@ class DataSourceRuntimeHints implements RuntimeHintsRegistrar {
 				reflectionHints.registerType(Class.forName(className),
 						INTROSPECT_DECLARED_CONSTRUCTORS, INVOKE_DECLARED_CONSTRUCTORS);
 				LOGGER.info("register reflection type: {}", className);
-			} catch (ClassNotFoundException e) {
+			} catch (ClassNotFoundException | NoClassDefFoundError e) {
 				LOGGER.info("Class not found '{}', can't register type to 'reflect-config.json'.", className);
 			}
 		}

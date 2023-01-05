@@ -161,6 +161,7 @@ public class SpringBootConfigurationProvider implements ExtConfigurationProvider
 			}
 			return new ValueAndType(getMethod.invoke(object), getMethod.getReturnType());
 		} catch (NoSuchMethodException e) {
+			//LOGGER.warn("NoSuchMethodException: {}.{}()", object.getClass().getSimpleName(), getMethodName);
 		}
 
 		getMethodName = "is" + String.valueOf(fieldName.charAt(0)).toUpperCase() + fieldName.substring(1);
