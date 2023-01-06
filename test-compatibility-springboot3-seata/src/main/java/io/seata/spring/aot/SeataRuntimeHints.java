@@ -23,6 +23,7 @@ import io.seata.rm.datasource.undo.SQLUndoLog;
 import io.seata.saga.statelang.parser.utils.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
@@ -48,6 +49,8 @@ import javax.sql.DataSource;
 import static io.seata.spring.aot.AotUtils.ALL_MEMBER_CATEGORIES;
 import static org.springframework.aot.hint.MemberCategory.INTROSPECT_DECLARED_CONSTRUCTORS;
 import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_CONSTRUCTORS;
+import static org.springframework.aot.hint.MemberCategory.INVOKE_DECLARED_METHODS;
+import static org.springframework.aot.hint.MemberCategory.INVOKE_PUBLIC_METHODS;
 
 class SeataRuntimeHints implements RuntimeHintsRegistrar {
 
@@ -81,18 +84,42 @@ class SeataRuntimeHints implements RuntimeHintsRegistrar {
 			try (InputStreamReader isr = new InputStreamReader(resource.getInputStream());
 				 BufferedReader br = new BufferedReader(isr)) {
 				br.lines().forEach(className -> {
-					registerReflectionType(hints, className);
+					registerReflectionType(hints, new MemberCategory[]{
+							INTROSPECT_DECLARED_CONSTRUCTORS,
+							INVOKE_DECLARED_CONSTRUCTORS
+					}, className);
 				});
 			} catch (IOException e) {
 				System.out.println("--- read error: " + resource.getFilename() + ", " + e.getMessage());
 			}
 		}
 
-		registerReflectionType(hints,
+		registerReflectionType(hints, new MemberCategory[]{
+						INTROSPECT_DECLARED_CONSTRUCTORS,
+						INVOKE_DECLARED_CONSTRUCTORS
+				},
 				"io.seata.sqlparser.druid.DruidDbTypeParserImpl",
 				"io.seata.sqlparser.druid.DruidSQLRecognizerFactoryImpl",
 				"io.seata.serializer.protobuf.ProtobufSerializer",
 				"io.seata.sqlparser.antlr.mysql.AntlrMySQLRecognizerFactory"
+		);
+
+		// XA support MySQL
+		registerReflectionType(hints, new MemberCategory[]{
+						INTROSPECT_DECLARED_CONSTRUCTORS,
+						INVOKE_DECLARED_CONSTRUCTORS,
+						INVOKE_PUBLIC_METHODS,
+						INVOKE_DECLARED_METHODS
+				},
+				"com.mysql.cj.conf.PropertySet",
+				"com.mysql.cj.jdbc.JdbcConnection",
+				"com.mysql.cj.conf.RuntimeProperty",
+				"com.mysql.cj.api.conf.PropertySet",
+				"com.mysql.cj.conf.ReadableProperty",
+				"com.mysql.cj.api.jdbc.JdbcConnection",
+				"com.mysql.cj.api.conf.ReadableProperty",
+				"com.mysql.cj.jdbc.SuspendableXAConnection",
+				"com.mysql.cj.jdbc.MysqlXAConnection"
 		);
 
 		hints.reflection().registerType(BranchUndoLog.class, ALL_MEMBER_CATEGORIES);
@@ -141,12 +168,11 @@ class SeataRuntimeHints implements RuntimeHintsRegistrar {
 		return SERVICES_FILENAMES.contains(resource.getFilename());
 	}
 
-	private void registerReflectionType(RuntimeHints hints, String... classNames) {
+	private void registerReflectionType(RuntimeHints hints, MemberCategory[] memberCategories, String... classNames) {
 		ReflectionHints reflectionHints = hints.reflection();
 		for (String className : classNames) {
 			try {
-				reflectionHints.registerType(Class.forName(className),
-						INTROSPECT_DECLARED_CONSTRUCTORS, INVOKE_DECLARED_CONSTRUCTORS);
+				reflectionHints.registerType(Class.forName(className), memberCategories);
 				LOGGER.info("register reflection type: {}", className);
 			} catch (ClassNotFoundException | NoClassDefFoundError e) {
 				LOGGER.info("Class not found '{}', can't register type to 'reflect-config.json'.", className);
