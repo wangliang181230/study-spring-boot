@@ -1,4 +1,5 @@
 title "test-compatibility-springboot3-seata"
 
 start target/test-compatibility-springboot3-seata.exe ^
-    --server.port=8081
+    -Dserver.port=8081 ^
+    -Dlogging.level.io.seata=DEBUG
