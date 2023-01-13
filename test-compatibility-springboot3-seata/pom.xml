@@ -13,6 +13,22 @@
 	<artifactId>test-compatibility-springboot3-seata</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
+	<!--<properties>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>-->
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -45,7 +61,8 @@
 		<dependency>
 			<groupId>io.seata</groupId>
 			<artifactId>seata-spring-boot-starter</artifactId>
-			<version>1.6.1</version>
+			<!--<version>1.6.1</version>-->
+			<version>2.0.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.seata</groupId>
@@ -66,6 +83,29 @@
 			<artifactId>druid</artifactId>
 			<version>1.2.15</version>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba.nacos</groupId>
+			<artifactId>nacos-client</artifactId>
+			<version>1.4.4</version>
+			<!--<version>2.2.0</version>-->
+			<!--<version>2.2.1-RC</version>-->
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.eureka</groupId>
+			<artifactId>eureka-client</artifactId>
+			<version>1.10.18</version>
+			<!--<version>2.0.0</version>-->
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-netflix-eureka-client</artifactId>
+		</dependency>-->
 
 		<!--<dependency>
 			<groupId>jakarta.servlet</groupId>
@@ -109,7 +149,17 @@
 						</executions>
 						<configuration>
 							<buildArgs>
-								<buildArg>-H:+AddAllCharsets</buildArg>
+								-H:+AddAllCharsets
+								--initialize-at-build-time=org.apache.commons.logging
+<!--								&#45;&#45;no-fallback-->
+<!--								&#45;&#45;initialize-at-build-time=ch.qos.logback-->
+<!--								&#45;&#45;initialize-at-build-time=org.slf4j-->
+								<!--&#45;&#45;initialize-at-run-time=io.netty.channel.epoll.Epoll-->
+								<!--&#45;&#45;initialize-at-run-time=org.slf4j.MDC-->
+<!--								&#45;&#45;report-unsupported-elements-at-runtime-->
+<!--								&#45;&#45;allow-incomplete-classpath-->
+<!--								&#45;&#45;enable-url-protocols=http-->
+								-H:+ReportExceptionStackTraces
 							</buildArgs>
 						</configuration>
 					</plugin>
