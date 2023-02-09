@@ -14,7 +14,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 
 	<properties>
-		<spring-cloud.version>2022.0.0</spring-cloud.version>
+		<spring-cloud.version>2022.0.1</spring-cloud.version>
 
 		<!--<seata.version>1.6.1</seata.version>-->
 		<!--<seata.version>1.7.0-SNAPSHOT</seata.version>-->
@@ -107,18 +107,18 @@
 			<artifactId>nacos-common</artifactId>
 			<version>${nacos.version}</version>
 		</dependency>
-		<!--<dependency>
+		<dependency>
 			<groupId>com.netflix.eureka</groupId>
 			<artifactId>eureka-client</artifactId>
 			<version>1.10.18</version>
-			&lt;!&ndash;<version>2.0.0</version>&ndash;&gt;
+			<!--<version>2.0.0</version>-->
 			<exclusions>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>-->
+		</dependency>
 		<!--<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-netflix-eureka-client</artifactId>
@@ -153,34 +153,43 @@
 					<artifactId>native-maven-plugin</artifactId>
 					<configuration>
 						<buildArgs>
-							--no-fallback
+							<!-- XA模式需要的参数 -->
+							<!-- -H:+AddAllCharsets-->
 
-							--initialize-at-build-time=org.apache.commons.logging
 
-							--initialize-at-build-time=ch.qos.logback
+							<!-- eureka-client:1.10.18 需要的参数 -->
+							<!--&#45;&#45;initialize-at-build-time=org.apache.commons.logging.LogFactory-->
+							<!--&#45;&#45;initialize-at-build-time=org.apache.commons.logging.LogFactoryService-->
 
-							--initialize-at-build-time=org.slf4j
+
+
+
+
+
+
+							<!--&#45;&#45;initialize-at-build-time=ch.qos.logback-->
+
+							<!--&#45;&#45;initialize-at-build-time=org.slf4j-->
 							<!--&#45;&#45;initialize-at-run-time=org.slf4j.MDC-->
 
-							--initialize-at-build-time=io.grpc
-							--initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.PooledByteBufAllocator
-							--initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.ByteBufAllocator
-							--initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.ByteBufUtil
-							--initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.AbstractReferenceCountedByteBuf
+							<!--&#45;&#45;initialize-at-build-time=io.grpc-->
+							<!--&#45;&#45;initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.PooledByteBufAllocator-->
+							<!--&#45;&#45;initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.ByteBufAllocator-->
+							<!--&#45;&#45;initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.ByteBufUtil-->
+							<!--&#45;&#45;initialize-at-run-time=io.grpc.netty.shaded.io.netty.buffer.AbstractReferenceCountedByteBuf-->
 
-							--initialize-at-build-time=com.google
+							<!--&#45;&#45;initialize-at-build-time=com.google-->
 
 							<!--&#45;&#45;initialize-at-run-time=io.netty.util.AbstractReferenceCounted-->
 							<!--&#45;&#45;initialize-at-run-time=io.netty.channel.DefaultFileRegion-->
-							--trace-class-initialization=io.netty.util.AbstractReferenceCounted
-							--trace-class-initialization=io.netty.channel.DefaultFileRegion
+							<!--&#45;&#45;trace-class-initialization=io.netty.util.AbstractReferenceCounted-->
+							<!--&#45;&#45;trace-class-initialization=io.netty.channel.DefaultFileRegion-->
 							<!--&#45;&#45;initialize-at-run-time=io.netty.channel.epoll.Epoll-->
 
 							<!--&#45;&#45;report-unsupported-elements-at-runtime-->
 							<!--&#45;&#45;allow-incomplete-classpath-->
 							<!--&#45;&#45;enable-url-protocols=http-->
 
-							-H:+AddAllCharsets
 							-H:+ReportExceptionStackTraces
 						</buildArgs>
 					</configuration>
