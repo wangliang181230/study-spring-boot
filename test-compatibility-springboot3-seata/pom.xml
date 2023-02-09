@@ -17,6 +17,7 @@
 		<spring-cloud.version>2022.0.0</spring-cloud.version>
 
 		<!--<seata.version>1.6.1</seata.version>-->
+		<!--<seata.version>1.7.0-SNAPSHOT</seata.version>-->
 		<seata.version>2.0.0-SNAPSHOT</seata.version>
 
 		<nacos.version>1.4.4</nacos.version>

@@ -1,6 +1,8 @@
 package cn.wangliang181230.seata;
 
-public class TccParam extends TccParamSuperClass {
+import java.io.Serializable;
+
+public class TccParam extends TccParamSuperClass implements Serializable {
 
 	private TccParam2 tccParam2;
 
