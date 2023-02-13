@@ -8,6 +8,7 @@ start target/test-compatibility-springboot3-seata.exe ^
 	-Dlogging.level.io.seata.core.rpc=INFO ^
 ^
 	-Dseata.registry.type=eureka ^
+	-Dseata.service.grouplist.default=x ^
 ^
 	-Dseata.data-source-proxy-mode=AT
 

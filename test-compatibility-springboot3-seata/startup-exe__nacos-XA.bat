@@ -8,6 +8,7 @@ start target/test-compatibility-springboot3-seata.exe ^
 	-Dlogging.level.io.seata.core.rpc=INFO ^
 ^
 	-Dseata.registry.type=nacos ^
+	-Dseata.service.grouplist.default=x ^
 ^
 	-Dseata.data-source-proxy-mode=XA
 
