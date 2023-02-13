@@ -18,6 +18,7 @@
 
 		<!--<seata.version>1.6.1</seata.version>-->
 		<!--<seata.version>1.7.0-SNAPSHOT</seata.version>-->
+		<!--<seata.version>1.7.0-native-SNAPSHOT</seata.version>-->
 		<seata.version>2.0.0-SNAPSHOT</seata.version>
 
 		<nacos.version>1.4.4</nacos.version>
@@ -25,6 +26,9 @@
 		<!--<nacos.version>2.2.0</nacos.version>-->
 		<!--<nacos.version>2.2.0-SNAPSHOT</nacos.version>-->
 		<!--<nacos.version>2.2.1-RC</nacos.version>-->
+
+		<eureka.version>1.10.18</eureka.version>
+		<!--<eureka.version>2.0.0</eureka.version>-->
 	</properties>
 
 	<!--<dependencyManagement>
@@ -110,8 +114,7 @@
 		<dependency>
 			<groupId>com.netflix.eureka</groupId>
 			<artifactId>eureka-client</artifactId>
-			<version>1.10.18</version>
-			<!--<version>2.0.0</version>-->
+			<version>${eureka.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
