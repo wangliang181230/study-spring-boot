@@ -166,10 +166,6 @@
 
 
 
-
-
-
-
 							<!--&#45;&#45;initialize-at-build-time=ch.qos.logback-->
 
 							<!--&#45;&#45;initialize-at-build-time=org.slf4j-->
@@ -194,7 +190,9 @@
 							<!--&#45;&#45;enable-url-protocols=http-->
 
 							-H:+ReportExceptionStackTraces
-							-H:+PrintAnalysisCallTree -H:+PrintImageObjectTree -H:+ExhaustiveHeapScan
+							-H:+PrintAnalysisCallTree
+							<!-- -H:+PrintImageObjectTree 会报空指针异常，已提交issue给官方，关注issue: https://github.com/graalvm/native-build-tools/issues/402 -->
+							-H:+ExhaustiveHeapScan
 						</buildArgs>
 					</configuration>
 				</plugin>
