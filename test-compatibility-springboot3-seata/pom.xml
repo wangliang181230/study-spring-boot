@@ -194,6 +194,7 @@
 							<!--&#45;&#45;enable-url-protocols=http-->
 
 							-H:+ReportExceptionStackTraces
+							-H:+PrintAnalysisCallTree -H:+PrintImageObjectTree -H:+ExhaustiveHeapScan
 						</buildArgs>
 					</configuration>
 				</plugin>
