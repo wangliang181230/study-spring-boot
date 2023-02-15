@@ -14,6 +14,8 @@
 	<version>1.0.0-SNAPSHOT</version>
 
 	<properties>
+		<native-build-tools-plugin.version>0.9.20</native-build-tools-plugin.version>
+
 		<spring-cloud.version>2022.0.1</spring-cloud.version>
 
 		<!--<seata.version>1.6.1</seata.version>-->
