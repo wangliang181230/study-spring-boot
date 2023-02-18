@@ -1,6 +1,7 @@
 title "test-compatibility-springboot3-seata"
 
-java -Dspring.aot.enabled=true -agentlib:native-image-agent=../src/main/resources/META-INF/native-image/cn.wangliang181230/test-compatibility-springboot3/ ^
+java -Dspring.aot.enabled=true ^
+	-agentlib:native-image-agent=config-output-dir=../src/main/resources/META-INF/native-image/cn.wangliang181230/test-compatibility-springboot3/ ^
 	-Dserver.port=8081 ^
  ^
 	-Dlogging.level.io.seata=DEBUG ^
