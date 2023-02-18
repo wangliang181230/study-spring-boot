@@ -1,6 +1,6 @@
 title "test-compatibility-springboot3-seata_XA"
 
-start target/test-compatibility-springboot3-seata.exe ^
+start ../target/test-compatibility-springboot3-seata.exe ^
 	-Dserver.port=8081 ^
  ^
 	-Dlogging.level.io.seata=DEBUG ^
@@ -8,6 +8,7 @@ start target/test-compatibility-springboot3-seata.exe ^
 	-Dlogging.level.io.seata.core.rpc=INFO ^
  ^
 	-Dseata.registry.type=file ^
+ ^
  ^
 	-Dseata.data-source-proxy-mode=XA
 

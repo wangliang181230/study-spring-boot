@@ -1,6 +1,6 @@
 title "test-compatibility-springboot3-seata_XA"
 
-start target/test-compatibility-springboot3-seata.exe ^
+java -Dspring.aot.enabled=true -agentlib:native-image-agent=../src/main/resources/META-INF/native-image/cn.wangliang181230/test-compatibility-springboot3/ ^
 	-Dserver.port=8081 ^
  ^
 	-Dlogging.level.io.seata=DEBUG ^
@@ -10,5 +10,8 @@ start target/test-compatibility-springboot3-seata.exe ^
 	-Dseata.registry.type=nacos ^
 	-Dseata.service.grouplist.default=x ^
  ^
-	-Dseata.data-source-proxy-mode=XA
+	-Dseata.data-source-proxy-mode=XA ^
+ ^
+ -jar ../target/test-compatibility-springboot3-seata.jar
+
 
