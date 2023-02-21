@@ -219,7 +219,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>native</id>
+			<id>build-native</id>
 			<build>
 				<plugins>
 					<plugin>
